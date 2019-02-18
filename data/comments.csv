@@ -1,0 +1,9 @@
+post_id|reply_to|user|text
+post_id1||user1|text1
+post_id2|post_id1|user2|reply_text2
+post_id3|post_id1|user3|reply_text3
+post_id6|post_id3|user5|reply_text6
+post_id7|post_id6|user3|reply_text7
+post_id4||user2|text4
+post_id5|post_id4|user4|reply_text5
+post_id8||user3|text8
