@@ -197,8 +197,16 @@ def depth(comments):
     >>> (depth(comments) == [1, 2, 2, 3, 4, 1, 2, 1]).all()
     True
     """
-
-    return ...
+    result = []
+    comments = comments.fillna(0)
+    for i in range(len(comments.index)):
+        if comments['reply_to'][i] == 0:
+            result.append(1)
+        else:
+            reply_to = comments['reply_to'][i]
+            post_index = comments[comments['post_id'] == reply_to].index[0]
+            result.append(result[post_index] + 1)
+    return pd.Series(result)
 
 
 def descendants(comments):
