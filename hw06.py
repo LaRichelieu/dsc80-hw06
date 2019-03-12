@@ -198,15 +198,35 @@ def depth(comments):
     True
     """
     result = []
-    comments = comments.fillna(0)
     for i in range(len(comments.index)):
-        if comments['reply_to'][i] == 0:
-            result.append(1)
-        else:
-            reply_to = comments['reply_to'][i]
-            post_index = comments[comments['post_id'] == reply_to].index[0]
-            result.append(result[post_index] + 1)
-    return pd.Series(result)
+        result.append(0)
+
+    top_post_index = comments[comments['reply_to'].isnull()].index.tolist()
+
+    depth = pd.Series(result)
+
+    for i in top_post_index:
+        updates = find_depth(result, i, comments)
+        depth.update(pd.Series(updates))
+        
+    return depth
+
+def find_depth(depth, post_index, comments):
+    current = comments['post_id'][post_index]
+    pre = comments['reply_to'][post_index]
+    result = depth
+
+    if comments['reply_to'].isnull()[post_index] == True:
+        result[post_index] = 1
+    else:
+        pre_index = comments[comments['post_id'] == pre].index[0]
+        result[post_index] = result[pre_index] + 1
+    
+    replys_index = comments[comments['reply_to'] == current].index.tolist()
+    for i in replys_index:
+        result = find_depth(result, i, comments)
+    
+    return result
 
 
 def descendants(comments):
